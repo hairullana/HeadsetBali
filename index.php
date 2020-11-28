@@ -7,6 +7,7 @@ require "connectDB.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
     <title>Headset Bali</title>
 </head>
 <body>
@@ -18,7 +19,7 @@ require "connectDB.php";
             <li><a href="pembelian.php">Pembelian</a></li>
             <li><a href="data-modal.php">Data Modal</a></li>
             <li><a href="stok-barang.php">Stok Barang</a></li>
-            <li><a href="data-barang.php">Data Barang</a></li>
+            <li><a href="dataBarang.php">Data Barang</a></li>
         </ul>
     </div>
 

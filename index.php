@@ -26,7 +26,86 @@ require "connectDB.php";
     <hr>
 
     <div id="body">
-        <h1>MAINTENANCE</h1>
+        <h1>Keuntungan Tahun Ini</h1>
+        <?php
+            $tahun = date('Y');
+            $dataTahun = mysqli_query($connectDB, "SELECT * from stok where tanggalTerjual > '$tahun-01-01' && tanggalTerjual < '$tahun-12-31'");
+            $modalTahun = 0;
+            $penjualanTahun = 0;
+            foreach($dataTahun as $data) {
+                $modalTahun += $data["hargaModal"];
+                $penjualanTahun += $data["hargaJual"];
+            }
+            $keuntunganBersih = $penjualanTahun - $modalTahun;
+        ?>
+        <ul>
+            <li>Total Penjualan = Rp. <?= $penjualanTahun ?></li>
+            <li>Keuntungan Bersih = Rp. <?= $keuntunganBersih ?></li>
+        </ul>
+        <h1>Keuntungan Bulan Ini</h1>
+        <?php
+            $bulan = date('m');
+            $dataBulan = mysqli_query($connectDB, "SELECT * from stok where tanggalTerjual > '$tahun-$bulan-01' && tanggalTerjual < '$tahun-$bulan-31'");
+            $modalBulan = 0;
+            $penjualanBulan = 0;
+            foreach($dataBulan as $data) {
+                $modalBulan += $data["hargaModal"];
+                $penjualanBulan += $data["hargaJual"];
+            }
+            $keuntunganBersih = $penjualanBulan - $modalBulan;
+        ?>
+        <ul>
+            <li>Total Penjualan = Rp. <?= $penjualanBulan ?></li>
+            <li>Keuntungan Bersih = Rp. <?= $keuntunganBersih ?></li>
+        </ul>
+        <h1>Keuntungan Bulan Ini</h1>
+        <?php
+            for ($i=1;$i<=12;$i++){
+                if(strlen($i<2)){
+                    $bulan = "0" . $i;
+                }else {
+                    $bulan = $i;
+                }
+                $bulan = mysqli_query($connectDB, "SELECT * from stok where tanggalTerjual > '$tahun-$bulan-01' && tanggalTerjual < '$tahun-$bulan-31'");
+                $modal[$i] = 0;
+                $penjualan[$i] = 0;
+                foreach($bulan as $data) {
+                    $modal[$i] += $data["hargaModal"];
+                    $penjualan[$i] += $data["hargaJual"];
+                }
+                $keuntunganBersihBulan[$i] = $penjualan[$i] - $modal[$i];
+            }
+        ?>
+        <table border=1>
+            <tr>
+                <th>BULAN</th>
+                <th>Januari</th>
+                <th>Februari</th>
+                <th>Maret</th>
+                <th>April</th>
+                <th>Mei</th>
+                <th>Juni</th>
+                <th>Juli</th>
+                <th>Agustus</th>
+                <th>September</th>
+                <th>Oktober</th>
+                <th>November</th>
+                <th>Desember</th>
+            </tr>
+                <th>LABA KOTOR</th>
+                <?php for($i=1;$i<=12;$i++) : ?>
+                <td><?= $penjualan[$i]; ?></td>
+                <?php endfor;?>
+            <tr>
+            </tr>
+                <th>LABA BERSIH</th>
+                <?php for($i=1;$i<=12;$i++) : ?>
+                <td><?= $keuntunganBersihBulan[$i]; ?></td>
+                <?php endfor;?>
+            <tr>
+
+            </tr>
+        </table>
     </div>
 
 </body>

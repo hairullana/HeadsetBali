@@ -37,6 +37,11 @@ if (isset($_POST["tambahStokBarang"])) {
         for ($j=0 ; $j<$totalBarang[$i] ; $j++) {
             mysqli_query($connectDB, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,0)");
         }
+        $totalStok = mysqli_query($connectDB, "SELECT * FROM data_barang WHERE idBarang = $idBarang[$i]");
+        $totalStok = mysqli_fetch_assoc($totalStok);
+        $totalStok = $totalStok["totalStok"];
+        $totalStok += $totalBarang[$i];
+        mysqli_query($connectDB,"UPDATE data_barang SET totalStok = $totalStok WHERE idBarang = $idBarang[$i]");
     }
 
 
@@ -121,7 +126,7 @@ if (isset($_POST["tambahStokBarang"])) {
                                     $dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
                                     foreach ($dataBarang as $data) :
                                 ?>
-                                        <option value="<?php $data["idBarang"] ?>"><?= $data["namaBarang"] ?></option>
+                                        <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
                                 <?php
                                     endforeach;
                                 ?>
@@ -130,8 +135,8 @@ if (isset($_POST["tambahStokBarang"])) {
                             <input type="text" name="modalBarang<?= $i ?>">
                             <label for="totalBarang<?= $i ?>">Total Barang</label>
                             <input type="number" name="totalBarang<?= $i ?>">
-                            <button type="submit" name="tambahStokBarang">Tambah Data</button>
                         <?php endfor; ?>
+                            <button type="submit" name="tambahStokBarang">Tambah Data</button>
                     </form>
 
                 <?php endif; ?>

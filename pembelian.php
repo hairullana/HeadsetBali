@@ -67,83 +67,128 @@ if (isset($_POST["tambahStokBarang"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
+    <?php include "headtags.php"; ?>
     <title>Pembelian Barang</title>
 </head>
 <body>
     
-    <div id="header">
-        <ul>
-            <li><a href="index.php">Overview</a></li>
-            <li><a href="penjualan.php">Penjulana</a></li>
-            <li><a href="pembelian.php">Pembelian</a></li>
-            <li><a href="data-modal.php">Data Modal</a></li>
-            <li><a href="stok-barang.php">Stok Barang</a></li>
-            <li><a href="dataBarang.php">Data Barang</a></li>
-        </ul>
-    </div>
+    <div class="row">
+        <?php include "sidebar.php"; ?>
+        <div class="col-md-10">
+            <h1 class="text-center display-4 mt-4">Pembelian Barang</h1>
+            <hr>
+            <?php if (!isset($_POST["tambahDataModal"]) && !isset($_POST["submitTotalJenisBarang"])) : ?>
 
-    <hr>
+                <div class="card col-md-8 offset-md-2">
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            <div class="form-group">
+                                <label for="tanggal">Tanggal Pembelian</label>
+                                <input type="date" name="tanggal" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="totalModal">Total Pembelian (Tanpa Ongkir)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Rp. </div>
+                                    </div>
+                                    <input type="text" name="totalModal" class="form-control" placeholder="Total Pembelian">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="totalModal">Total Ongkir</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Rp. </div>
+                                    </div>
+                                    <input type="text" name="ongkir" class="form-control" placeholder="Total Ongkir">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="totalBarang">Total Barang</label>
+                                <input type="number" name="totalBarang" class="form-control" placeholder="Total Barang">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" name="tambahDataModal" class="btn btn-primary">Simpan Data</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-    <div id="body">
+            <?php else : ?>
+                    
 
-        <?php if (!isset($_POST["tambahDataModal"]) && !isset($_POST["submitTotalJenisBarang"])) : ?>
+                    <?php
+                        if (isset($_POST["submitTotalJenisBarang"])) :
+                            echo "
+                                <script>
+                                    alert('data berhasil ditambahkan');
+                                </script>
+                            ";
+                            $totalJenisBarang = htmlspecialchars($_POST["totalJenisBarang"]);
+                    ?>
 
-            <form action="" method="POST">
-                <label for="tanggal">Tanggal</label><br>
-                <input type="date" name="tanggal"><br>
-                <label for="totalModal">Total Modal (Tanpa Ongkir)</label><br>
-                <input type="text" name="totalModal"><br>
-                <label for="ongkir">Ongkos Kirim</label><br>
-                <input type="text" name="ongkir"><br>
-                <label for="totalBarang">Total Barang</label><br>
-                <input type="number" name="totalBarang"><br>
-                <button type="submit" name="tambahDataModal">Tambah Data</button>
-            </form>
-
-        <?php else : ?>
-                <form action="" method="POST">
-                    <input type="number" name="totalJenisBarang">
-                    <button type="submit" name="submitTotalJenisBarang">Lanjut Bosss</button>
-                </form>
-
-                <?php
-                    if (isset($_POST["submitTotalJenisBarang"])) :
-                        echo "
-                            <script>
-                                alert('data berhasil ditambahkan');
-                            </script>
-                        ";
-                        $totalJenisBarang = htmlspecialchars($_POST["totalJenisBarang"]);
-                ?>
-
-                    <form action="" method="POST">
-                        <input type="hidden" name="totalJenisBarang" value="<?= $totalJenisBarang ?>">
-                        <?php for ($i=0 ; $i<$totalJenisBarang ; $i++) : ?>
-                            <label for="idBarang<?= $i ?>">Nama Barang</label><br>
-                            <select name="idBarang<?= $i ?>" id="">
-                                <?php
-                                    $dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
-                                    foreach ($dataBarang as $data) :
-                                ?>
-                                        <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
-                                <?php
-                                    endforeach;
-                                ?>
-                            </select>
-                            <label for="modalBarang<?= $i ?>">Harga Modal Barang</label>
-                            <input type="text" name="modalBarang<?= $i ?>">
-                            <label for="totalBarang<?= $i ?>">Total Barang</label>
-                            <input type="number" name="totalBarang<?= $i ?>">
-                        <?php endfor; ?>
-                            <button type="submit" name="tambahStokBarang">Tambah Data</button>
-                    </form>
-
-                <?php endif; ?>
-            
-
-        <?php endif; ?>
-
+                        <div class="card col-md-8 offset-md-2">
+                            <div class="card-body">
+                                <form action="" method="POST">
+                                    <input type="hidden" name="totalJenisBarang" value="<?= $totalJenisBarang ?>">
+                                    <?php for ($i=0 ; $i<$totalJenisBarang ; $i++) : ?>
+                                        <div class="form-group">
+                                            <label for="idBarang<?= $i ?>">Jenis Barang <?= $i+1 ?></label>
+                                            <select name="idBarang<?= $i ?>" class="form-control">
+                                                <option value="0" selected disabled>Pilih Nama Barang</option>
+                                                <?php
+                                                    $dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
+                                                    foreach ($dataBarang as $data) :
+                                                ?>
+                                                        <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
+                                                <?php
+                                                    endforeach;
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">Rp. </div>
+                                                    </div>
+                                                    <input type="text" name="modalBarang<?= $i ?>" class="form-control" placeholder="Harga Modal Barang">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">Rp. </div>
+                                                    </div>
+                                                    <input type="number" name="totalBarang<?= $i ?>" placeholder="Total Barang" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endfor; ?>
+                                        <div class="form-group">
+                                            <button type="submit" name="tambahStokBarang" class="btn btn-primary">Simpan Data</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    <?php else : ?>
+                        <div class="card col-md-8 offset-md-2">
+                            <div class="card-body">
+                                <form action="" method="POST">
+                                    <div class="form-group">
+                                        <label for="totalJenisBarang">Jumlah Jenis Barang</label>
+                                        <input type="number" name="totalJenisBarang" plcaceholder="Jumlah Jenis Barang" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" name="submitTotalJenisBarang" class="btn btn-primary">Lanjut Bosku</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </div>
 
 </body>

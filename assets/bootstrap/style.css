@@ -1,0 +1,29 @@
+.navbar-brand,
+h3 {
+    font-family: Goldman;
+    font-size: 28px;
+}
+
+.jumbotron h6 {
+    font-family: Goldman;
+    font-size: 78px;
+}
+
+.form-control {
+    font-size: 16px;
+    transition: all 0.4s;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: #5cb85c;
+}
+
+.input-group-text {
+    background: white;
+}
+
+hr {
+    background-color: red;
+    width: 45%;
+}

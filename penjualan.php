@@ -52,28 +52,55 @@ if (isset($_POST["submitPenjualan"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <?php require "headtags.php"; ?>
+    <title>Penjualan Barang</title>
 </head>
 <body>
 
-    <form action="" method="POST">
-        <label for="tanggal">Tanggal Penjualan</label><br>
-        <input type="date" name="tanggal"><br>
-        <label for="idBarang">Nama Barang</label><br>
-        <select name="idBarang" id="">
-            <?php
-                $dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
-                foreach ($dataBarang as $data) :
-            ?>
-                    <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
-            <?php
-                endforeach;
-            ?>
-        </select><br>
-        <label for="hargaJual">Harga Jual</label><br>
-        <input type="text" name="hargaJual"><br>
-        <button type="submit" name="submitPenjualan">Submit Data Penjualan</button>
-    </form>
+    <div class="row">
+        <?php include "sidebar.php"; ?>
+        <div class="col-md-10 mt-4">
+            <h1 class="display-4 text-center">Penjualan Barang</h1>
+            <hr>
+            <div class="col-md-8 offset-md-2 card">
+                <div class="card-body">
+                    <form action="" method="POST">
+                        <div class="form-group">
+                            <label for="tanggal">Tanggal Penjualan</label>
+                            <input type="date" name="tanggal" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="idBarang">Nama Barang</label>
+                            <select name="idBarang" class="form-control">
+                                <option value="0" selected disabled>Pilih Nama Barang</option>
+                                <?php
+                                    $dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
+                                    foreach ($dataBarang as $data) :
+                                ?>
+                                        <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
+                                <?php
+                                    endforeach;
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="hargaJual">Harga Jual</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">Rp. </div>
+                                </div>
+                                <input type="text" name="hargaJual" class="form-control" placeholder="Harga Jual">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit" name="submitPenjualan">Simpan Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </body>
 </html>

@@ -16,7 +16,6 @@ require "connectDB.php";
         <?php require "sidebar.php"; ?>
 
         <div class="col-md-10">
-            <div class="container">
                 <h1 class="display-4 mt-4 text-center">Headset Bali</h1>
                 <hr>
                 <div class="row text-white mt-4">
@@ -116,7 +115,6 @@ require "connectDB.php";
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
     

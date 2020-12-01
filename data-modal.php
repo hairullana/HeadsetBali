@@ -2,7 +2,7 @@
 
 require "connectDB.php";
 
-$dataModal = mysqli_query($connectDB, "SELECT * FROM modal");
+$dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC");
 ?>
 
 
@@ -31,6 +31,7 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal");
                             <th>Total Modal</th>
                             <th>Total Penjualan</th>
                             <th>Keuntungan Bersih</th>
+                            <th>Aksi</th>
                         </tr>
                         
                         <?php foreach ($dataModal as $modal) : ?>
@@ -51,6 +52,7 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal");
                                 <td>Rp. <?= $modal["totalModal"] + $modal["ongkir"] ?></td>
                                 <td>Rp. <?= $modal["totalPenjualan"] ?></td>
                                 <td>Rp. <?php if ($modal["status"] == 0){ echo "Belum Diketahui"; }else{ echo $modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]);} ?></td>
+                                <td><a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary">Hapus Modal</a></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>

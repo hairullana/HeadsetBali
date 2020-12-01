@@ -6,6 +6,6 @@
         <li class="nav-item"><a class="nav-link active text-white" href="pembelian.php"><i class="fas fa-brandcamp"></i> Pembelian</a></li>
         <li class="nav-item"><a class="nav-link active text-white" href="data-modal.php"><i class="fas fa-brandcamp"></i> Data Modal</a></li>
         <li class="nav-item"><a class="nav-link active text-white" href="stok-barang.php"><i class="fas fa-brandcamp"></i> Stok Barang</a></li>
-        <li class="nav-item"><a class="nav-link active text-white" href="dataBarang.php"><i class="fas fa-brandcamp"></i> Data Barang</a></li>
+        <li class="nav-item"><a class="nav-link active text-white" href="data-barang.php"><i class="fas fa-brandcamp"></i> Data Barang</a></li>
     </ul>
 </div>

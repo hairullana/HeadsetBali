@@ -35,7 +35,7 @@ if (isset($_POST["tambahStokBarang"])) {
     
     for ($i=0 ; $i<$totalJenisBarang ; $i++){
         for ($j=0 ; $j<$totalBarang[$i] ; $j++) {
-            mysqli_query($connectDB, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,0)");
+            mysqli_query($connectDB, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,0,'')");
         }
         $totalStok = mysqli_query($connectDB, "SELECT * FROM data_barang WHERE idBarang = $idBarang[$i]");
         $totalStok = mysqli_fetch_assoc($totalStok);
@@ -158,9 +158,6 @@ if (isset($_POST["tambahStokBarang"])) {
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">Rp. </div>
-                                                    </div>
                                                     <input type="number" name="totalBarang<?= $i ?>" placeholder="Total Barang" class="form-control">
                                                 </div>
                                             </div>

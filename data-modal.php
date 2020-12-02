@@ -22,9 +22,9 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC
             <h1 class="text-center display-4 mt-4">Data Modal</h1>
             <hr>
             <div class="row">
-                <div class="col-md-10 offset-md-1">
+                <div class="col mt-3">
                     <table class="table text-center" border=1>
-                        <tr class="bg-dark text-white">
+                        <tr class="bg-primary text-white">
                             <th>Tanggal</th>
                             <th>List Barang</th>
                             <th>Status</th>
@@ -52,7 +52,7 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC
                                 <td>Rp. <?= $modal["totalModal"] + $modal["ongkir"] ?></td>
                                 <td>Rp. <?= $modal["totalPenjualan"] ?></td>
                                 <td>Rp. <?php if ($modal["status"] == 0){ echo "Belum Diketahui"; }else{ echo $modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]);} ?></td>
-                                <td><a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary">Hapus Modal</a></td>
+                                <td><a href="edit-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary">Edit</a> <a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary">Hapus</a></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>

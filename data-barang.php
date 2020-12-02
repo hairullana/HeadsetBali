@@ -60,8 +60,8 @@ $totalDataBarang = mysqli_num_rows($dataBarang);
 
             <?php if (mysqli_num_rows($dataBarang) > 0 ) : ?>
                 
-                <table class="table text-center">
-                    <tr>
+                <table class="table text-center col-md-10 offset-md-1">
+                    <tr class="bg-primary text-white">
                         <th>Nama Barang</th>
                         <th>Total Stok</th>
                         <th>Total Laku</th>
@@ -83,12 +83,12 @@ $totalDataBarang = mysqli_num_rows($dataBarang);
                             }
 
                         ?>
-                        <td><?= $barang["namaBarang"]; ?></td>
-                        <td><?= $barang["totalStok"]; ?></td>
-                        <td><?= $barang["totalLaku"]; ?></td>
-                        <td><?= $totalKeuntungan; ?></td>
-                        <td><?= $mean = number_format($mean); ?></td>
-                        <td><a class="btn btn-danger rounded-pill" href="editDataBarang.php?id=<?= $data['idBarang'] ?>">Edit</a> <a class="btn btn-danger rounded-pill " href="hapusDataBarang.php?id=<?= $data['idBarang'] ?>">Hapus</a></td>
+                        <td class="text-left"><?= $barang["namaBarang"] ?></td>
+                        <td><?= $barang["totalStok"] ?></td>
+                        <td><?= $barang["totalLaku"] ?></td>
+                        <td><?= "Rp. " . number_format($totalKeuntungan) ?></td>
+                        <td><?= "Rp. " . number_format($mean); ?></td>
+                        <td><a class="btn btn-primary rounded-pill" href="edit-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-edit"></i></a> <a class="btn btn-primary rounded-pill " href="hapus-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-trash-alt"></i></a></td>
                     </tr>
                     <?php endforeach; ?>
                 </table>

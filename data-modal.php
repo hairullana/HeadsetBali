@@ -23,7 +23,7 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC
             <hr>
             <div class="row">
                 <div class="col mt-3">
-                    <table class="table text-center" border=1>
+                    <table class="table text-center">
                         <tr class="bg-primary text-white">
                             <th>Tanggal</th>
                             <th>List Barang</th>
@@ -48,11 +48,11 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC
                                         <?php endforeach; ?>
                                     </ul>
                                 </td>
-                                <td><?php if ($modal["status"] == 0) { echo "Masih Ada";}else {echo "Sudah Habis";} ?></td>
-                                <td>Rp. <?= $modal["totalModal"] + $modal["ongkir"] ?></td>
-                                <td>Rp. <?= $modal["totalPenjualan"] ?></td>
-                                <td>Rp. <?php if ($modal["status"] == 0){ echo "Belum Diketahui"; }else{ echo $modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]);} ?></td>
-                                <td><a href="edit-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary">Edit</a> <a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary">Hapus</a></td>
+                                <td><?php if ($modal["status"] == 0) { echo "Ada";}else {echo "Habis";} ?></td>
+                                <td>Rp. <?= number_format($modal["totalModal"] + $modal["ongkir"]) ?></td>
+                                <td>Rp. <?= number_format($modal["totalPenjualan"]) ?></td>
+                                <td><?php if ($modal["status"] == 0){ echo "Belum Diketahui"; }else{ echo "Rp. " . number_format($modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]));} ?></td>
+                                <td><a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary rounded-pill"><i class="fa fa-trash-alt"></i></a></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>

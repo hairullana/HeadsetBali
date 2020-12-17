@@ -1,27 +1,6 @@
 <?php
 
-require "connectDB.php";
-
-$idBarang = $_GET["id"];
-$data = mysqli_query($connectDB, "SELECT * FROM data_barang WHERE idBarang = $idBarang");
-$data = mysqli_fetch_assoc($data);
-
-
-if(isset($_POST["editNamaBarang"])) {
-    $namaBarang = htmlspecialchars($_POST["namaBarang"]);
-
-    mysqli_query($connectDB,"UPDATE data_barang SET namaBarang = '$namaBarang' WHERE idBarang = '$idBarang'");
-    if (mysqli_affected_rows($connectDB) > 0) {
-        echo "
-            <script>
-                alert('Data Barang Berhasil di Ubah');
-                document.location = 'data-barang.php';
-            </script>
-        ";
-    }else {
-        echo mysqli_error($connectDB);
-    }
-}
+require "db.php";
 
 ?>
 
@@ -34,6 +13,32 @@ if(isset($_POST["editNamaBarang"])) {
     <title>Edit Data Barang</title>
 </head>
 <body>
+
+    <?php
+
+    $idBarang = $_GET["id"];
+    $data = mysqli_query($db, "SELECT * FROM data_barang WHERE idBarang = $idBarang");
+    $data = mysqli_fetch_assoc($data);
+    
+    
+    if(isset($_POST["editNamaBarang"])) {
+        $namaBarang = htmlspecialchars($_POST["namaBarang"]);
+    
+        mysqli_query($db,"UPDATE data_barang SET namaBarang = '$namaBarang' WHERE idBarang = '$idBarang'");
+        if (mysqli_affected_rows($db) > 0) {
+            echo "
+                <script>
+                    Swal.fire('Perubahan Data Sukses','Data Barang Sudah Diubah','success').then(function(){
+                        window.location = 'data-barang.php';
+                    });
+                </script>
+            ";
+        }else {
+            echo mysqli_error($db);
+        }
+    }
+
+    ?>
 
     <div class="row">
         <?php include "sidebar.php" ?>

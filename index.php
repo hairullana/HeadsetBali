@@ -1,5 +1,5 @@
 <?php
-require "connectDB.php";
+require "db.php";
 
 
 if (isset($_POST["detil"])){
@@ -34,7 +34,7 @@ if (isset($_POST["detil"])){
                             <h3 class="card-title"><strong>Pendapatan Tahun <?= date('Y'); ?></strong></h3>
                             <?php
                                 $tahun = date('Y');
-                                $dataTahun = mysqli_query($connectDB, "SELECT * from stok where tanggalTerjual > '$tahun-01-01' && tanggalTerjual < '$tahun-12-31'");
+                                $dataTahun = mysqli_query($db, "SELECT * from stok where tanggalTerjual > '$tahun-01-01' && tanggalTerjual < '$tahun-12-31'");
                                 $modalTahun = 0;
                                 $penjualanTahun = 0;
                                 foreach($dataTahun as $data) {
@@ -54,7 +54,7 @@ if (isset($_POST["detil"])){
                             <h3 class="card-title"><strong>Pendapatan Bulan <?= date('M'); ?></strong></h3>
                             <?php
                                 $bulan = date('m');
-                                $dataBulan = mysqli_query($connectDB, "SELECT * from stok where tanggalTerjual >= '$tahun-$bulan-01' && tanggalTerjual <= '$tahun-$bulan-31'");
+                                $dataBulan = mysqli_query($db, "SELECT * from stok where tanggalTerjual >= '$tahun-$bulan-01' && tanggalTerjual <= '$tahun-$bulan-31'");
                                 $modalBulan = 0;
                                 $penjualanBulan = 0;
                                 foreach($dataBulan as $data) {
@@ -81,7 +81,7 @@ if (isset($_POST["detil"])){
                                 }else {
                                     $bulan = $i;
                                 }
-                                $bulan = mysqli_query($connectDB, "SELECT * from stok where tanggalTerjual >= '$tahun-$bulan-01' && tanggalTerjual <= '$tahun-$bulan-31'");
+                                $bulan = mysqli_query($db, "SELECT * from stok where tanggalTerjual >= '$tahun-$bulan-01' && tanggalTerjual <= '$tahun-$bulan-31'");
                                 $modal[$i] = 0;
                                 $penjualan[$i] = 0;
                                 foreach($bulan as $data) {
@@ -121,7 +121,7 @@ if (isset($_POST["detil"])){
                                     <td>
                                         <form method="post">
                                             <input type="hidden" name="bulan" value="<?= $i ?>">
-                                            <button type="submit" class="btn btn-primary btn-block rounded-pill" name="detil">Lihat Detail</button>
+                                            <button type="submit" class="btn btn-primary rounded-pill" name="detil"><i class="fa fa-info-circle"></i> Detail</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -146,7 +146,7 @@ if (isset($_POST["detil"])){
                             }else {
                                 $hari = $i;
                             }
-                            $dataPenjualan = mysqli_query($connectDB, "SELECT sum(hargaModal) as hargaModal, sum(hargaJual) as hargaJual FROM  stok WHERE tanggalTerjual = '$tahun-$bulan-$hari'");
+                            $dataPenjualan = mysqli_query($db, "SELECT sum(hargaModal) as hargaModal, sum(hargaJual) as hargaJual FROM  stok WHERE tanggalTerjual = '$tahun-$bulan-$hari'");
                             $dataPenjualan = mysqli_fetch_assoc($dataPenjualan);
                 ?>
 
@@ -157,8 +157,8 @@ if (isset($_POST["detil"])){
                                         <h5><?= $i ?></h5>
                                     </div>
                                     <div class="card-body">
-                                        X : Rp. <?= number_format($dataPenjualan["hargaJual"]) ?><br>
-                                        Y : Rp. <?= number_format($dataPenjualan["hargaJual"] - $dataPenjualan["hargaModal"]) ?>
+                                        <i class="fa fa-arrow-circle-up"></i> Rp. <?= number_format($dataPenjualan["hargaJual"]) ?><br>
+                                        <i class="fa fa-arrow-circle-right"></i> Rp. <?= number_format($dataPenjualan["hargaJual"] - $dataPenjualan["hargaModal"]) ?>
                                     </div>
                                 </div>
                             </div>

@@ -1,8 +1,8 @@
 <?php
 
-require "connectDB.php";
+require "db.php";
 
-$dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC");
+$dataModal = mysqli_query($db, "SELECT * FROM modal ORDER BY idModal DESC");
 ?>
 
 
@@ -37,7 +37,7 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC
                         <?php foreach ($dataModal as $modal) : ?>
                             <?php
                                 $idModal = $modal["idModal"];
-                                $dataBarang = mysqli_query($connectDB,"SELECT namaBarang, COUNT(namaBarang) as jumlahBarang FROM data_barang INNER JOIN stok ON data_barang.idBarang = stok.idBarang where stok.idModal = $idModal GROUP BY namaBarang");
+                                $dataBarang = mysqli_query($db,"SELECT namaBarang, COUNT(namaBarang) as jumlahBarang FROM data_barang INNER JOIN stok ON data_barang.idBarang = stok.idBarang where stok.idModal = $idModal GROUP BY namaBarang");
                             ?>
                             <tr>
                                 <td><?= $modal["tanggalPembelian"] ?></td>
@@ -52,7 +52,7 @@ $dataModal = mysqli_query($connectDB, "SELECT * FROM modal ORDER BY idModal DESC
                                 <td>Rp. <?= number_format($modal["totalModal"] + $modal["ongkir"]) ?></td>
                                 <td>Rp. <?= number_format($modal["totalPenjualan"]) ?></td>
                                 <td><?php if ($modal["status"] == 0){ echo "Belum Diketahui"; }else{ echo "Rp. " . number_format($modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]));} ?></td>
-                                <td><a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary rounded-pill"><i class="fa fa-trash-alt"></i></a></td>
+                                <td><a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary rounded-pill" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data Pelamar ?')"><i class="fa fa-trash-alt"></i></a></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>

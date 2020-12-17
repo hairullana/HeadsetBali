@@ -1,62 +1,8 @@
 <?php
 
-require 'connectDB.php';
+require 'db.php';
+session_start();
 
-if (isset($_POST["tambahDataModal"])) {
-    $tanggal = htmlspecialchars($_POST["tanggal"]);
-    $totalModal = htmlspecialchars($_POST["totalModal"]);
-    $ongkir = htmlspecialchars($_POST["ongkir"]);
-    $totalBarang = htmlspecialchars($_POST["totalBarang"]);
-
-    mysqli_query($connectDB,"INSERT INTO modal VALUES('','$tanggal',$totalModal,$ongkir,$totalBarang,0,0)");
-    if (mysqli_affected_rows($connectDB) > 0){
-        echo "
-            <script>
-                alert('data berhasil ditambahkan');
-            </script>
-        ";
-    }else {
-        echo mysqli_error($connectDB);
-    }
-}
-
-
-
-if (isset($_POST["tambahStokBarang"])) {
-    $totalJenisBarang = htmlspecialchars($_POST["totalJenisBarang"]);
-    $dataModal = mysqli_query($connectDB, "SELECT MAX(idModal) as idModal FROM modal");
-    $dataModal = mysqli_fetch_assoc($dataModal);
-    $idModal = $dataModal["idModal"];
-    for ($i=0;$i<$totalJenisBarang;$i++){
-        $idBarang[$i] = htmlspecialchars($_POST["idBarang$i"]);
-        $modalBarang[$i] = htmlspecialchars($_POST["modalBarang$i"]);
-        $totalBarang[$i] = htmlspecialchars($_POST["totalBarang$i"]);
-    }
-    
-    for ($i=0 ; $i<$totalJenisBarang ; $i++){
-        for ($j=0 ; $j<$totalBarang[$i] ; $j++) {
-            mysqli_query($connectDB, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,0,'')");
-        }
-        $totalStok = mysqli_query($connectDB, "SELECT * FROM data_barang WHERE idBarang = $idBarang[$i]");
-        $totalStok = mysqli_fetch_assoc($totalStok);
-        $totalStok = $totalStok["totalStok"];
-        $totalStok += $totalBarang[$i];
-        mysqli_query($connectDB,"UPDATE data_barang SET totalStok = $totalStok WHERE idBarang = $idBarang[$i]");
-    }
-
-
-    if (mysqli_affected_rows($connectDB) > 0){
-        echo "
-            <script>
-                alert('data berhasil ditambahkan');
-            </script>
-        ";
-    }else {
-        echo mysqli_error($connectDB);
-    }
-
-
-}
 
 ?>
 
@@ -109,7 +55,7 @@ if (isset($_POST["tambahStokBarang"])) {
                                 <input type="number" name="totalBarang" class="form-control" placeholder="Total Barang">
                             </div>
                             <div class="form-group">
-                                <button type="submit" name="tambahDataModal" class="btn btn-primary">Simpan Data</button>
+                                <button onclick="return confirm('Apakah Anda Yakin Ingin Menambah Data Pembelian ?')" type="submit" name="tambahDataModal" class="btn btn-primary">Simpan Data</button>
                             </div>
                         </form>
                     </div>
@@ -120,12 +66,27 @@ if (isset($_POST["tambahStokBarang"])) {
 
                     <?php
                         if (isset($_POST["submitTotalJenisBarang"])) :
-                            echo "
-                                <script>
-                                    alert('data berhasil ditambahkan');
-                                </script>
-                            ";
                             $totalJenisBarang = htmlspecialchars($_POST["totalJenisBarang"]);
+                            $totalBarang = $_SESSION["totalBarang"];
+                            if ($totalJenisBarang > $totalBarang){
+                                $dataModal = mysqli_query($db, "SELECT MAX(idModal) as idModal FROM modal");
+                                $dataModal = mysqli_fetch_assoc($dataModal);
+                                $idModal = $dataModal["idModal"];
+                                mysqli_query($db,"DELETE FROM modal WHERE idModal = $idModal");
+                                echo "
+                                    <script>
+                                        Swal.fire('Penambahan Data Gagal','Jumlah Jenis Barang Lebih Banyak Dari Jumlah Barang','error').then(function(){
+                                            window.location = 'pembelian.php';
+                                        });
+                                    </script>
+                                ";
+                            }else{
+                                echo "
+                                    <script>
+                                        Swal.fire('Penambahan Data Sukses','Data Pembelian Modal Sudah Ditambah','success');
+                                    </script>
+                                ";
+                            }
                     ?>
 
                         <div class="card col-md-8 offset-md-2">
@@ -138,7 +99,7 @@ if (isset($_POST["tambahStokBarang"])) {
                                             <select name="idBarang<?= $i ?>" class="form-control">
                                                 <option value="0" selected disabled>Pilih Nama Barang</option>
                                                 <?php
-                                                    $dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
+                                                    $dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
                                                     foreach ($dataBarang as $data) :
                                                 ?>
                                                         <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
@@ -164,7 +125,7 @@ if (isset($_POST["tambahStokBarang"])) {
                                         </div>
                                     <?php endfor; ?>
                                         <div class="form-group">
-                                            <button type="submit" name="tambahStokBarang" class="btn btn-primary">Simpan Data</button>
+                                            <button onclick="return confirm('Apakah Data Yang Anda Inputkan Sudah Benar ?')" type="submit" name="tambahStokBarang" class="btn btn-primary">Simpan Data</button>
                                         </div>
                                 </form>
                             </div>
@@ -178,7 +139,7 @@ if (isset($_POST["tambahStokBarang"])) {
                                         <input type="number" name="totalJenisBarang" plcaceholder="Jumlah Jenis Barang" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" name="submitTotalJenisBarang" class="btn btn-primary">Lanjut Bosku</button>
+                                        <button onclick="return confirm('Lanjut ?')" type="submit" name="submitTotalJenisBarang" class="btn btn-primary">Lanjut Bosku</button>
                                     </div>
                                 </form>
                             </div>
@@ -190,3 +151,75 @@ if (isset($_POST["tambahStokBarang"])) {
 
 </body>
 </html>
+
+<?php
+
+if (isset($_POST["tambahDataModal"])) {
+    $tanggal = htmlspecialchars($_POST["tanggal"]);
+    $totalModal = htmlspecialchars($_POST["totalModal"]);
+    $ongkir = htmlspecialchars($_POST["ongkir"]);
+    $totalBarang = htmlspecialchars($_POST["totalBarang"]);
+    $_SESSION["totalBarang"] = $totalBarang;
+    
+
+    mysqli_query($db,"INSERT INTO modal VALUES('','$tanggal',$totalModal,$ongkir,$totalBarang,0,0)");
+    if (mysqli_affected_rows($db) > 0){
+        echo "
+            <script>
+                Swal.fire('Penambahan Data Sukses','Data Pembelian Modal Sudah Ditambah','success');
+            </script>
+        ";
+    }else {
+        echo mysqli_error($db);
+    }
+}
+
+
+
+if (isset($_POST["tambahStokBarang"])) {
+    $totalJenisBarang = htmlspecialchars($_POST["totalJenisBarang"]);
+    $dataModal = mysqli_query($db, "SELECT MAX(idModal) as idModal FROM modal");
+    $dataModal = mysqli_fetch_assoc($dataModal);
+    $idModal = $dataModal["idModal"];
+    $TOTAL = 0;
+    for ($i=0;$i<$totalJenisBarang;$i++){
+        $idBarang[$i] = htmlspecialchars($_POST["idBarang$i"]);
+        $modalBarang[$i] = htmlspecialchars($_POST["modalBarang$i"]);
+        $totalBarang[$i] = htmlspecialchars($_POST["totalBarang$i"]);
+        $TOTAL += $totalBarang[$i];
+    }
+    
+    $totalBarang = $_SESSION["totalBarang"];
+
+    if ($totalBarang != $TOTAL){
+        mysqli_query($db,"DELETE FROM modal WHERE idModal = $idModal");
+        echo "
+            <script>
+                Swal.fire('Penambahan Data Gagal','Jumlah Barang Tidak Sesuai, Seharusnya Total Barang = $totalBarang','error');
+            </script>
+        ";
+
+    }else{
+        for ($i=0 ; $i<$totalJenisBarang ; $i++){
+            for ($j=0 ; $j<$totalBarang[$i] ; $j++) {
+                mysqli_query($db, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,0,'')");
+            }
+        }
+    
+    
+        if (mysqli_affected_rows($db) > 0){
+            echo "
+                <script>
+                    Swal.fire('Penambahan Data Sukses','Data Stok Barang Sudah Ditambah','success');
+                </script>
+            ";
+        }else {
+            echo mysqli_error($db);
+        }
+    }
+
+
+
+}
+
+?>

@@ -6,6 +6,6 @@ $passwordDB = "";
 $nameDB = "headset-bali";
 
 // Connect to Database
-$connectDB = mysqli_connect($serverDB, $usernameDB, $passwordDB, $nameDB);
+$db = mysqli_connect($serverDB, $usernameDB, $passwordDB, $nameDB);
 
 ?>

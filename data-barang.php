@@ -1,24 +1,8 @@
 <?php
 
-require "connectDB.php";
+require "db.php";
 
-if (isset($_POST["tambahDataBarang"])) {
-    $namaBarang = htmlspecialchars($_POST["namaBarang"]);
-
-    mysqli_query($connectDB, "INSERT INTO data_barang VALUES ('','$namaBarang','0','0')");
-    if (mysqli_affected_rows($connectDB) > 0) {
-        echo "
-            <script>
-                alert('Data Barang Berhasil Di Ubah');
-            </script>
-        ";
-    }else {
-        echo mysqli_error($connectDB);
-    }
-}
-
-$dataBarang = mysqli_query($connectDB,"SELECT * FROM data_barang");
-$totalDataBarang = mysqli_num_rows($dataBarang);
+$dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
 
 ?>
 
@@ -47,7 +31,7 @@ $totalDataBarang = mysqli_num_rows($dataBarang);
                                     <input type="text" class="form-control" name="namaBarang" placeholder="Nama Barang">
                                 </div>
                                 <div class="form-group text-center">
-                                    <button type="submit" name="tambahDataBarang" class="btn btn-primary">Tambah Data Barang</button>
+                                    <button type="submit" name="tambahDataBarang" class="btn btn-primary" onclick="return confirm('Apakah Anda Yakin Ingin Menambah Data Barang ?')">Tambah Data Barang</button>
                                 </div>
                             </form>
                         </div>
@@ -65,30 +49,42 @@ $totalDataBarang = mysqli_num_rows($dataBarang);
                         <th>Nama Barang</th>
                         <th>Total Stok</th>
                         <th>Total Laku</th>
+                        <th>X̄ Penjualan</th>
+                        <th>X̄ Keuntungan</th>
                         <th>Total Keuntungan</th>
-                        <th>X̄ Harga Jual</th>
                         <th>Aksi</th>
                     </tr>
                     <?php foreach ($dataBarang as $barang) : ?>
                     <tr>
                         <?php
                             $idBarang = $barang["idBarang"];
-                            $laba = mysqli_query($connectDB,"SELECT count(idBarang) as totalBarang, SUM(hargaJual) as totalPenjualan, SUM(hargaModal) as totalModal FROM stok WHERE idBarang = $idBarang && status = 1");
+                            $laba = mysqli_query($db,"SELECT count(idBarang) as totalBarang, SUM(hargaJual) as totalPenjualan, SUM(hargaModal) as totalModal FROM stok WHERE idBarang = $idBarang AND status = 1");
                             $laba = mysqli_fetch_assoc($laba);
                             $totalKeuntungan = $laba["totalPenjualan"] - $laba["totalModal"];
+
+                            // cari rata2 penjualan
                             if ($totalKeuntungan < 1) {
-                                $mean = 0;
+                                $meanPenjualan = 0;
                             }else {
-                                $mean = $totalKeuntungan / $laba["totalBarang"];
+                                $meanPenjualan = $laba["totalPenjualan"] / $laba["totalBarang"];
                             }
+
+                            // cari rata2 keuntungan
+                            if ($totalKeuntungan < 1) {
+                                $meanKeuntungan = 0;
+                            }else {
+                                $meanKeuntungan = $totalKeuntungan / $laba["totalBarang"];
+                            }
+                            
 
                         ?>
                         <td class="text-left"><?= $barang["namaBarang"] ?></td>
-                        <td><?= $barang["totalStok"] ?></td>
-                        <td><?= $barang["totalLaku"] ?></td>
+                        <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 0")); ?></td>
+                        <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 1")); ?></td>
+                        <td><?= "Rp. " . number_format($meanPenjualan); ?></td>
+                        <td><?= "Rp. " . number_format($meanKeuntungan); ?></td>
                         <td><?= "Rp. " . number_format($totalKeuntungan) ?></td>
-                        <td><?= "Rp. " . number_format($mean); ?></td>
-                        <td><a class="btn btn-primary rounded-pill" href="edit-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-edit"></i></a> <a class="btn btn-primary rounded-pill " href="hapus-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-trash-alt"></i></a></td>
+                        <td><a class="btn btn-primary rounded-pill" href="edit-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-edit"></i></a> <a class="btn btn-primary rounded-pill " href="hapus-data-barang.php?id=<?= $barang['idBarang'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data Barang ?')"><i class="fa fa-trash-alt"></i></a></td>
                     </tr>
                     <?php endforeach; ?>
                 </table>
@@ -101,3 +97,26 @@ $totalDataBarang = mysqli_num_rows($dataBarang);
 
 </body>
 </html>
+
+<?php
+
+if (isset($_POST["tambahDataBarang"])) {
+    $namaBarang = htmlspecialchars($_POST["namaBarang"]);
+
+    mysqli_query($db, "INSERT INTO data_barang VALUES ('','$namaBarang','0','0')");
+    if (mysqli_affected_rows($db) > 0) {
+        echo "
+            <script>
+                Swal.fire('Penambahan Data Sukses','Data Barang Sudah Ditambah','success').then(function(){
+                    window.location = 'data-barang.php';
+                });
+            </script>
+        ";
+    }else {
+        echo mysqli_error($db);
+    }
+}
+
+
+
+?>

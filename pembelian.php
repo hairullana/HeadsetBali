@@ -178,6 +178,7 @@ if (isset($_POST["tambahDataModal"])) {
 
 if (isset($_POST["tambahStokBarang"])) {
     $totalJenisBarang = htmlspecialchars($_POST["totalJenisBarang"]);
+    
     $dataModal = mysqli_query($db, "SELECT MAX(idModal) as idModal FROM modal");
     $dataModal = mysqli_fetch_assoc($dataModal);
     $idModal = $dataModal["idModal"];
@@ -188,14 +189,15 @@ if (isset($_POST["tambahStokBarang"])) {
         $totalBarang[$i] = htmlspecialchars($_POST["totalBarang$i"]);
         $TOTAL += $totalBarang[$i];
     }
+    // die;
     
-    $totalBarang = $_SESSION["totalBarang"];
+    $totalBarangAwal = $_SESSION["totalBarang"];
 
-    if ($totalBarang != $TOTAL){
+    if ($totalBarangAwal != $TOTAL){
         mysqli_query($db,"DELETE FROM modal WHERE idModal = $idModal");
         echo "
             <script>
-                Swal.fire('Penambahan Data Gagal','Jumlah Barang Tidak Sesuai, Seharusnya Total Barang = $totalBarang','error');
+                Swal.fire('Penambahan Data Gagal','Jumlah Barang Tidak Sesuai, Seharusnya Total Barang = $totalBarangAwal','error');
             </script>
         ";
 

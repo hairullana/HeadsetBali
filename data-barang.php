@@ -2,7 +2,11 @@
 
 require "db.php";
 
-$dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
+$dataBarang = mysqli_query($db,"SELECT *, SUM(stok.hargaModal) as totalHargaModal, COUNT(stok.idBarang) as totalBarang FROM data_barang INNER JOIN stok ON data_barang.idBarang = stok.idBarang GROUP BY data_barang.idBarang ORDER BY SUM(stok.status) DESC");
+
+// status
+// 0 = laku
+// 1 = belum laku
 
 ?>
 
@@ -49,6 +53,7 @@ $dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
                         <th>Nama Barang</th>
                         <th>Total Stok</th>
                         <th>Total Laku</th>
+                        <th>X̄ Pembelian</th>
                         <th>X̄ Penjualan</th>
                         <th>X̄ Keuntungan</th>
                         <th>Total Keuntungan</th>
@@ -58,9 +63,12 @@ $dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
                     <tr>
                         <?php
                             $idBarang = $barang["idBarang"];
-                            $laba = mysqli_query($db,"SELECT count(idBarang) as totalBarang, SUM(hargaJual) as totalPenjualan, SUM(hargaModal) as totalModal FROM stok WHERE idBarang = $idBarang AND status = 1");
+                            $laba = mysqli_query($db,"SELECT count(idBarang) as totalBarang, SUM(hargaJual) as totalPenjualan, SUM(hargaModal) as totalModal FROM stok WHERE idBarang = $idBarang AND status = 0");
                             $laba = mysqli_fetch_assoc($laba);
                             $totalKeuntungan = $laba["totalPenjualan"] - $laba["totalModal"];
+
+                            // cari rata2 pembelian
+                            $meanPembelian = $barang["totalHargaModal"] / $barang["totalBarang"];
 
                             // cari rata2 penjualan
                             if ($totalKeuntungan < 1) {
@@ -79,8 +87,9 @@ $dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
 
                         ?>
                         <td class="text-left"><?= $barang["namaBarang"] ?></td>
-                        <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 0")); ?></td>
                         <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 1")); ?></td>
+                        <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 0")); ?></td>
+                        <td><?= "Rp. " . number_format($meanPembelian); ?></td>
                         <td><?= "Rp. " . number_format($meanPenjualan); ?></td>
                         <td><?= "Rp. " . number_format($meanKeuntungan); ?></td>
                         <td><?= "Rp. " . number_format($totalKeuntungan) ?></td>

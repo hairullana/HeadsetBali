@@ -71,7 +71,7 @@ if (isset($_POST["submitPenjualan"])) {
     $tanggal = $_POST["tanggal"];
 
     // ambil barang paling lama
-    $dataStok = mysqli_query($db, "SELECT * FROM stok WHERE idBarang = $idBarang && status = 0 ORDER BY idStok ASC");
+    $dataStok = mysqli_query($db, "SELECT * FROM stok WHERE idBarang = $idBarang && status = 1 ORDER BY idStok ASC");
     if (mysqli_num_rows($dataStok) < 1){
         echo "
             <script>
@@ -87,7 +87,7 @@ if (isset($_POST["submitPenjualan"])) {
         $idBarang = $dataStok["idBarang"];
     
         // pasang harga jual di tabel stok
-        mysqli_query($db, "UPDATE stok SET hargaJual = $hargaJual, status = 1, tanggalTerjual = DATE_FORMAT(tanggalTerjual, '$tanggal') WHERE idStok = $idStok");
+        mysqli_query($db, "UPDATE stok SET hargaJual = $hargaJual, status = 0, tanggalTerjual = DATE_FORMAT(tanggalTerjual, '$tanggal') WHERE idStok = $idStok");
     
         // ganti status dan totalPenjualan di tabel modal
         $dataModal = mysqli_query($db,"SELECT * FROM modal WHERE idModal = $idModal");
@@ -95,8 +95,8 @@ if (isset($_POST["submitPenjualan"])) {
         $totalPenjualan = $dataModal["totalPenjualan"] + $hargaJual;
     
         // jika semua terjual, ubah status modal
-        if (mysqli_num_rows(mysqli_query($db,"SELECT * FROM stok WHERE idModal = $idModal AND status = 1")) == $dataModal["totalBarang"]){
-            mysqli_query($db,"UPDATE modal SET status = 1 WHERE idModal = $idModal");
+        if (mysqli_num_rows(mysqli_query($db,"SELECT * FROM stok WHERE idModal = $idModal AND status = 0")) == $dataModal["totalBarang"]){
+            mysqli_query($db,"UPDATE modal SET status = 0 WHERE idModal = $idModal");
         }
     
         // ubah totalPenjualan modal

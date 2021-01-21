@@ -162,7 +162,7 @@ if (isset($_POST["tambahDataModal"])) {
     $_SESSION["totalBarang"] = $totalBarang;
     
 
-    mysqli_query($db,"INSERT INTO modal VALUES('','$tanggal',$totalModal,$ongkir,$totalBarang,0,0)");
+    mysqli_query($db,"INSERT INTO modal VALUES('','$tanggal',$totalModal,$ongkir,$totalBarang,1,0)");
     if (mysqli_affected_rows($db) > 0){
         echo "
             <script>
@@ -204,7 +204,7 @@ if (isset($_POST["tambahStokBarang"])) {
     }else{
         for ($i=0 ; $i<$totalJenisBarang ; $i++){
             for ($j=0 ; $j<$totalBarang[$i] ; $j++) {
-                mysqli_query($db, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,0,'')");
+                mysqli_query($db, "INSERT INTO stok VALUES ('','$idModal','$idBarang[$i]','$modalBarang[$i]',0,1,'')");
             }
         }
     

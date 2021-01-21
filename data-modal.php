@@ -48,10 +48,10 @@ $dataModal = mysqli_query($db, "SELECT * FROM modal ORDER BY idModal DESC");
                                         <?php endforeach; ?>
                                     </ul>
                                 </td>
-                                <td><?php if ($modal["status"] == 0) { echo "Ada";}else {echo "Habis";} ?></td>
+                                <td><?php if ($modal["status"] == 1) { echo "Ada";}else {echo "Habis";} ?></td>
                                 <td>Rp. <?= number_format($modal["totalModal"] + $modal["ongkir"]) ?></td>
                                 <td>Rp. <?= number_format($modal["totalPenjualan"]) ?></td>
-                                <td><?php if ($modal["status"] == 0){ echo "Belum Diketahui"; }else{ echo "Rp. " . number_format($modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]));} ?></td>
+                                <td><?php if ($modal["status"] == 1){ echo "Belum Diketahui"; }else{ echo "Rp. " . number_format($modal["totalPenjualan"]-($modal["totalModal"]+$modal["ongkir"]));} ?></td>
                                 <td><a href="hapus-data-modal.php?id=<?= $modal['idModal'] ?>" class="btn btn-primary rounded-pill" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data Pelamar ?')"><i class="fa fa-trash-alt"></i></a></td>
                             </tr>
                         <?php endforeach; ?>

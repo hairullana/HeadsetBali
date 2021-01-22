@@ -47,62 +47,72 @@ $dataBarang = mysqli_query($db,"SELECT *, SUM(stok.hargaModal) as totalHargaModa
 
 
             <?php if (mysqli_num_rows($dataBarang) > 0 ) : ?>
-                
-                <table class="table text-center col-md-10 offset-md-1">
-                    <tr class="bg-primary text-white">
-                        <th>Nama Barang</th>
-                        <th>Total Stok</th>
-                        <th>Total Laku</th>
-                        <th>X̄ Pembelian</th>
-                        <th>X̄ Penjualan</th>
-                        <th>X̄ Keuntungan</th>
-                        <th>Total Keuntungan</th>
-                        <th>Aksi</th>
-                    </tr>
-                    <?php foreach ($dataBarang as $barang) : ?>
-                    <tr>
-                        <?php
-                            $idBarang = $barang["idBarang"];
-                            $laba = mysqli_query($db,"SELECT count(idBarang) as totalBarang, SUM(hargaJual) as totalPenjualan, SUM(hargaModal) as totalModal FROM stok WHERE idBarang = $idBarang AND status = 0");
-                            $laba = mysqli_fetch_assoc($laba);
-                            $totalKeuntungan = $laba["totalPenjualan"] - $laba["totalModal"];
-
-                            // cari rata2 pembelian
-                            $meanPembelian = $barang["totalHargaModal"] / $barang["totalBarang"];
-
-                            // cari rata2 penjualan
-                            if ($totalKeuntungan < 1) {
-                                $meanPenjualan = 0;
-                            }else {
-                                $meanPenjualan = $laba["totalPenjualan"] / $laba["totalBarang"];
-                            }
-
-                            // cari rata2 keuntungan
-                            if ($totalKeuntungan < 1) {
-                                $meanKeuntungan = 0;
-                            }else {
-                                $meanKeuntungan = $totalKeuntungan / $laba["totalBarang"];
-                            }
-                            
-
-                        ?>
-                        <td class="text-left"><?= $barang["namaBarang"] ?></td>
-                        <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 1")); ?></td>
-                        <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 0")); ?></td>
-                        <td><?= "Rp. " . number_format($meanPembelian); ?></td>
-                        <td><?= "Rp. " . number_format($meanPenjualan); ?></td>
-                        <td><?= "Rp. " . number_format($meanKeuntungan); ?></td>
-                        <td><?= "Rp. " . number_format($totalKeuntungan) ?></td>
-                        <td><a class="btn btn-primary rounded-pill" href="edit-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-edit"></i></a> <a class="btn btn-primary rounded-pill " href="hapus-data-barang.php?id=<?= $barang['idBarang'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data Barang ?')"><i class="fa fa-trash-alt"></i></a></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </table>
+                <div class="col-md-10 offset-md-1 my-3">
+                    <table class="table text-center" id="data">
+                        <thead>
+                            <tr class="bg-primary text-white">
+                                <th>Nama Barang</th>
+                                <th>Total Stok</th>
+                                <th>Total Laku</th>
+                                <th>X̄ Pembelian</th>
+                                <th>X̄ Penjualan</th>
+                                <th>X̄ Keuntungan</th>
+                                <th>Total Keuntungan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($dataBarang as $barang) : ?>
+                            <tr>
+                                <?php
+                                    $idBarang = $barang["idBarang"];
+                                    $laba = mysqli_query($db,"SELECT count(idBarang) as totalBarang, SUM(hargaJual) as totalPenjualan, SUM(hargaModal) as totalModal FROM stok WHERE idBarang = $idBarang AND status = 0");
+                                    $laba = mysqli_fetch_assoc($laba);
+                                    $totalKeuntungan = $laba["totalPenjualan"] - $laba["totalModal"];
+                                    
+                                    // cari rata2 pembelian
+                                    $meanPembelian = $barang["totalHargaModal"] / $barang["totalBarang"];
+                                    
+                                    // cari rata2 penjualan
+                                    if ($totalKeuntungan < 1) {
+                                        $meanPenjualan = 0;
+                                    }else {
+                                        $meanPenjualan = $laba["totalPenjualan"] / $laba["totalBarang"];
+                                    }
+                                    
+                                    // cari rata2 keuntungan
+                                    if ($totalKeuntungan < 1) {
+                                        $meanKeuntungan = 0;
+                                    }else {
+                                        $meanKeuntungan = $totalKeuntungan / $laba["totalBarang"];
+                                    }
+                                    
+                                    
+                                ?>
+                                <td class="text-left"><?= $barang["namaBarang"] ?></td>
+                                <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 1")); ?></td>
+                                <td><?= mysqli_num_rows(mysqli_query($db, "SELECT * from stok where idBarang = $idBarang AND status = 0")); ?></td>
+                                <td><?= "Rp. " . number_format($meanPembelian); ?></td>
+                                <td><?= "Rp. " . number_format($meanPenjualan); ?></td>
+                                <td><?= "Rp. " . number_format($meanKeuntungan); ?></td>
+                                <td><?= "Rp. " . number_format($totalKeuntungan) ?></td>
+                                <td><a class="btn btn-primary rounded-pill" href="edit-data-barang.php?id=<?= $barang['idBarang'] ?>"><i class="fa fa-edit"></i></a> <a class="btn btn-primary rounded-pill " href="hapus-data-barang.php?id=<?= $barang['idBarang'] ?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data Barang ?')"><i class="fa fa-trash-alt"></i></a></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php else : ?>
                 <h1>Belum Ada Data</h1>
             <?php endif; ?>
         </div>
 
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#data').DataTable();
+        } );
+	</script>
 
 </body>
 </html>

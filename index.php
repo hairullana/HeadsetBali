@@ -9,7 +9,25 @@ if (isset($_POST["detil"])){
         </script>
     ";
 }
+
+if (isset($_POST["cek"])){
+    $tahun = $_POST["tahun"];
+    echo "
+        <script>
+            window.location.href = 'index.php?tahun=$tahun';
+        </script>
+    ";
+}
+
+if(isset($_GET["tahun"])){
+    $tahun = $_GET["tahun"];
+}else {
+    $tahun = date('Y');
+}
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,11 +47,24 @@ if (isset($_POST["detil"])){
                 <h1 class="display-4 mt-4 text-center">Headset Bali</h1>
                 <hr>
                 <div class="row text-white mt-4">
+                    <div class="col-md-4 offset-md-4 text-center">
+                        <form action="" method="post">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelect01">Tahun</label>
+                                </div>
+                                <select class="custom-select" id="inputGroupSelect01" name="tahun">
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                </select>
+                                <button type="submit" class="button btn-primary" name="cek"><i class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
                     <div class="col-sm-5 offset-md-1 card bg-primary" style="width: 25rem;">
                         <div class="card-body">
-                            <h3 class="card-title"><strong>Pendapatan Tahun <?= date('Y'); ?></strong></h3>
+                            <h3 class="card-title"><strong>Pendapatan Tahun <?= $tahun; ?></strong></h3>
                             <?php
-                                $tahun = date('Y');
                                 $dataTahun = mysqli_query($db, "SELECT * from stok where tanggalTerjual > '$tahun-01-01' && tanggalTerjual < '$tahun-12-31'");
                                 $modalTahun = 0;
                                 $penjualanTahun = 0;
@@ -137,8 +168,7 @@ if (isset($_POST["detil"])){
                 <?php
                     if (isset($_POST["detil"])) :
                         $bulan = $_POST["bulan"];
-                        echo  "<h3 id='detil' class='display-4 text-center col-12 mb-5'>Data Penjualan Bulan " . $bulan . "</h3>";
-                        $tahun = date('Y');
+                        echo  "<h2 id='detil' class='text-center col-12 mb-5'>Data Penjualan Bulan " . $bulan . "</h2>";
                         $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun);
                         for ($i=1;$i<=$jumlahHari;$i++) :
                             if (strlen($i) == 1) {

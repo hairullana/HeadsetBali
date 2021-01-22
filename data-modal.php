@@ -2,7 +2,22 @@
 
 require "db.php";
 
-$dataModal = mysqli_query($db, "SELECT * FROM modal ORDER BY idModal DESC");
+//konfirgurasi pagination
+$jumlahDataPerHalaman = 10;
+$jumlahData = mysqli_num_rows(mysqli_query($db, "SELECT * FROM modal"));
+//ceil() = pembulatan ke atas
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+//menentukan halaman aktif
+//$halamanAktif = ( isset($_GET["page"]) ) ? $_GET["page"] : 1;
+if ( isset($_GET["page"])){
+    $halamanAktif = $_GET["page"];
+}else{
+    $halamanAktif = 1;
+}
+//data awal
+$awalData = ( $jumlahDataPerHalaman * $halamanAktif ) - $jumlahDataPerHalaman;
+
+$dataModal = mysqli_query($db, "SELECT * FROM modal ORDER BY idModal DESC LIMIT $awalData, $jumlahDataPerHalaman");
 ?>
 
 
@@ -21,8 +36,28 @@ $dataModal = mysqli_query($db, "SELECT * FROM modal ORDER BY idModal DESC");
         <div class="col-md-10">
             <h1 class="text-center display-4 mt-4">Data Modal</h1>
             <hr>
+            
             <div class="row">
                 <div class="col mt-3">
+
+                    <!-- pagination -->
+                    <nav aria-label="...">
+                        <ul class="pagination justify-content-center">
+                            <?php for( $i = 1; $i <= $jumlahHalaman; $i++ ) : ?>
+                                <?php if( $i == $halamanAktif ) : ?>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+                                    </li>
+                                <?php else : ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+                                    </li>   
+                                <?php endif; ?>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                    <!-- end pagination -->
+
                     <table class="table text-center">
                         <tr class="bg-primary text-white">
                             <th>Tanggal</th>

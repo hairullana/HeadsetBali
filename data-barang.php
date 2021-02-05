@@ -122,7 +122,7 @@ $dataBarang = mysqli_query($db,"SELECT *, SUM(stok.hargaModal) as totalHargaModa
 if (isset($_POST["tambahDataBarang"])) {
     $namaBarang = htmlspecialchars($_POST["namaBarang"]);
 
-    mysqli_query($db, "INSERT INTO data_barang VALUES ('','$namaBarang','0','0')");
+    mysqli_query($db, "INSERT INTO data_barang VALUES('','$namaBarang')");
     if (mysqli_affected_rows($db) > 0) {
         echo "
             <script>

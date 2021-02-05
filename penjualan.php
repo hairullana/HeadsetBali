@@ -32,7 +32,8 @@ require 'db.php';
                             <select name="idBarang" class="form-control">
                                 <option value="0" selected disabled>Pilih Nama Barang</option>
                                 <?php
-                                    $dataBarang = mysqli_query($db,"SELECT * FROM data_barang");
+                                    // ambil data barang yang ready stok
+                                    $dataBarang = mysqli_query($db,"SELECT data_barang.idBarang as idBarang, data_barang.namaBarang as namaBarang FROM data_barang JOIN stok ON data_barang.idBarang = stok.idBarang WHERE stok.status = 1 GROUP BY stok.idBarang");
                                     foreach ($dataBarang as $data) :
                                 ?>
                                         <option value="<?= $data['idBarang'] ?>"><?= $data["namaBarang"] ?></option>
